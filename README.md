@@ -69,6 +69,28 @@ This script demonstrates how to load the model and make a prediction on a sample
 
 ## Custom Feature Extraction
 
-The script `src/features/static_features.py` provides a starting point for extracting your own features from PE files. You can extend this script and integrate it into your own data processing pipeline.
+The script `src/features/static_features.py` provides a powerful tool for extracting static features from PE files. You can use this to analyze individual files or to build your own datasets for training.
+
+### Extracted Features
+
+The script extracts a wide range of features, which are organized into the following categories:
+
+*   **`header`**: Information from the PE header, such as timestamps, machine type, and DLL characteristics.
+*   **`imports`**: Information about imported functions, including the number of imported libraries and the names of the functions.
+*   **`sections`**: A detailed analysis of each section in the PE file, including its name, size, and entropy. High entropy can be an indicator of packed or encrypted code.
+*   **`strings`**: Analysis of the printable strings found in the binary, including the number of strings, average string length, and counts of suspicious strings like URLs and registry keys.
+
+### Usage
+
+You can use the `extract_static_features` function in your own Python scripts:
+
+```python
+from src.features.static_features import extract_static_features
+
+features = extract_static_features("path/to/your/file.exe")
+if features:
+    import json
+    print(json.dumps(features, indent=4))
+```
 
 This allows you to train models on data other than the EMBER dataset.
