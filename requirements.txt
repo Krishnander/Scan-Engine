@@ -7,3 +7,4 @@ joblib
 tensorflow
 lightgbm
 tqdm
+termcolor

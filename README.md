@@ -94,3 +94,23 @@ if features:
 ```
 
 This allows you to train models on data other than the EMBER dataset.
+
+## Scanning for Malware
+
+This project includes a command-line tool, `scan.py`, to scan files or directories for malware.
+
+### Usage
+
+To scan a single file:
+
+```bash
+python scan.py /path/to/your/file.exe
+```
+
+To scan an entire directory:
+
+```bash
+python scan.py /path/to/your/directory/
+```
+
+The tool will print a report to the console, with color-coded predictions for each file.
