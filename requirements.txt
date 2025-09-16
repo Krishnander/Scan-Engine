@@ -1,0 +1,10 @@
+requests
+pefile
+scikit-learn
+pandas
+numpy
+joblib
+tensorflow
+lightgbm
+tqdm
+termcolor
