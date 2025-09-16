@@ -34,7 +34,6 @@ def extract_static_features(filepath):
     try:
         pe = pefile.PE(filepath)
     except pefile.PEFormatError:
-        print(f"Error: {filepath} is not a valid PE file.")
         return None
 
     features = {}
@@ -99,6 +98,50 @@ def extract_static_features(filepath):
     features["strings"] = string_features
 
     return features
+
+def extract_basic_features(filepath):
+    """
+    Extracts basic features from any file.
+    """
+    if not os.path.exists(filepath):
+        print(f"Error: File not found at {filepath}")
+        return None
+
+    features = {}
+    features["size"] = os.path.getsize(filepath)
+    with open(filepath, "rb") as f:
+        data = f.read()
+    features["entropy"] = calculate_entropy(data)
+
+    strings = re.findall(b"[\x20-\x7E]{4,}", data)
+    string_features = {
+        "num_strings": len(strings)
+    }
+    if strings:
+        string_features["avg_string_len"] = sum(len(s) for s in strings) / len(strings)
+        string_features["num_path_strings"] = len([s for s in strings if b'/' in s or b'\\' in s])
+        string_features["num_url_strings"] = len([s for s in strings if b'http://' in s or b'https://' in s])
+        string_features["num_registry_strings"] = len([s for s in strings if b'HKEY_' in s])
+    else:
+        string_features["avg_string_len"] = 0
+        string_features["num_path_strings"] = 0
+        string_features["num_url_strings"] = 0
+        string_features["num_registry_strings"] = 0
+    features["strings"] = string_features
+
+    return features
+
+def extract_features(filepath):
+    """
+    Extracts features from any file. It dispatches to the appropriate
+    feature extractor based on the file type.
+    """
+    try:
+        pefile.PE(filepath)
+        return extract_static_features(filepath)
+    except pefile.PEFormatError:
+        # Not a PE file, extract basic features
+        return extract_basic_features(filepath)
 
 if __name__ == "__main__":
     # This is an example of how to use the feature extractor.
